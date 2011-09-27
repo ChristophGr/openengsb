@@ -77,12 +77,22 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.api.security.PermissionProvider">
+ <service interface="org.openengsb.core.api.security.PermissionProvider">
     <service-properties>
       <entry key="connector" value="root" />
       <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
     </service-properties>
     <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
+  </service>
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.security.PrivateKeySource</value>
+      <value>org.openengsb.core.api.security.PublicKeySource</value>
+    </interfaces>
+    <bean class="org.openengsb.core.security.internal.FileKeySource" init-method="init">
+      <property name="algorithm" value="RSA" />
+    </bean>
   </service>
 
 </blueprint>
