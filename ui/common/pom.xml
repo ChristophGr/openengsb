@@ -212,7 +212,7 @@
     </dependency>
 
     <!-- Wicket Dependencies -->
-    <dependency>
+    <!--<dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
       <scope>provided</scope>
@@ -239,7 +239,7 @@
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-velocity</artifactId>
       <optional>true</optional>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
