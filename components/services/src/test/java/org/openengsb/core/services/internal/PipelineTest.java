@@ -54,6 +54,7 @@ import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.openengsb.core.security.filter.MessageAuthenticatorFilter;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.osgi.framework.BundleContext;
 
 public class PipelineTest extends AbstractOpenEngSBTest {
 
@@ -78,7 +79,7 @@ public class PipelineTest extends AbstractOpenEngSBTest {
             new FilterChainFactory<String, String>(String.class, String.class);
 
         JsonMethodCallMarshalFilterFactory jsonMethodCallMarshalFilterFactory =
-            new JsonMethodCallMarshalFilterFactory(new JsonObjectSerializer(new ObjectMapper()));
+            new JsonMethodCallMarshalFilterFactory(new JsonObjectSerializer(mock(BundleContext.class)));
         List<Object> filters = Arrays.asList(new Object[]{ jsonMethodCallMarshalFilterFactory, requestMapperFilter });
         filterChainFactory.setFilters(filters);
 
@@ -133,7 +134,7 @@ public class PipelineTest extends AbstractOpenEngSBTest {
             new FilterChainFactory<String, String>(String.class, String.class);
 
         JsonMethodCallMarshalFilterFactory jsonMethodCallMarshalFilterFactory =
-            new JsonMethodCallMarshalFilterFactory(new JsonObjectSerializer(new ObjectMapper()));
+            new JsonMethodCallMarshalFilterFactory(new JsonObjectSerializer(mock(BundleContext.class)));
         List<Object> filters = Arrays.asList(new Object[]{ jsonMethodCallMarshalFilterFactory, requestMapperFilter });
 
         filterChainFactory.setFilters(filters);

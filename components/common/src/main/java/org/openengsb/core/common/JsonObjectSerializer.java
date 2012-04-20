@@ -42,12 +42,11 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
     private ObjectWriter writer;
     private BundleContext bundleContext;
 
-    public JsonObjectSerializer(ObjectMapper mapper) {
-        this.mapper = mapper;
-        writer = mapper.writerWithDefaultPrettyPrinter();
+    public JsonObjectSerializer() {
     }
 
-    public JsonObjectSerializer() {
+    public JsonObjectSerializer(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
     public void init() {
