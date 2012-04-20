@@ -29,6 +29,7 @@ import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
 import org.codehaus.jackson.map.type.SimpleType;
 import org.codehaus.jackson.type.JavaType;
 import org.openengsb.core.api.remote.GenericObjectSerializer;
+import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.openengsb.labs.delegation.service.Provide;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -46,12 +47,7 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
     }
 
     public JsonObjectSerializer(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
-    public void init() {
-        mapper = createMapperWithDefaults(bundleContext);
-        writer = mapper.writerWithDefaultPrettyPrinter();
+        setBundleContext(bundleContext);
     }
 
     @Override
@@ -76,11 +72,12 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        mapper = createMapperWithDefaults(bundleContext);
+        writer = mapper.writerWithDefaultPrettyPrinter();
     }
 
     private static ObjectMapper createMapperWithDefaults(BundleContext bundleContext) {
         ObjectMapper mapper = new ObjectMapper();
-        DelegatedClassLoadingHelper classLoadingHelper = new DelegatedClassLoadingHelper(bundleContext);
 
         TypeResolverBuilder<?> typer = new DefaultTypeResolverBuilder(DefaultTyping.OBJECT_AND_NON_CONCRETE) {
             @Override
@@ -104,7 +101,7 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
             }
         };
 
-        typer = typer.init(JsonTypeInfo.Id.NAME, new DelegatingTypeIdResolver(classLoadingHelper));
+        typer = typer.init(JsonTypeInfo.Id.NAME, new DelegatingTypeIdResolver(bundleContext));
         typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
         mapper.setDefaultTyping(typer);
 
@@ -114,17 +111,31 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
     static final class DelegatingTypeIdResolver implements TypeIdResolver {
         private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingTypeIdResolver.class);
 
-        private DelegatedClassLoadingHelper helper;
+        private DelegationClassLoader delegationClassLoader;
 
-        public DelegatingTypeIdResolver(DelegatedClassLoadingHelper helper) {
-            this.helper = helper;
+        public DelegatingTypeIdResolver(BundleContext bundleContext) {
+            delegationClassLoader = new DelegationClassLoader(bundleContext);
+        }
+
+        private Class<?> doLoadClass(String name) throws ClassNotFoundException {
+            try {
+                return delegationClassLoader.loadClass(name);
+            } catch (ClassNotFoundException e) {
+                // ignore, try next
+            }
+            try {
+                return getClass().getClassLoader().loadClass(name);
+            } catch (ClassNotFoundException e) {
+                // ignore, try next
+            }
+            return Thread.currentThread().getContextClassLoader().loadClass(name);
         }
 
         @Override
         public JavaType typeFromId(String id) {
             try {
                 LOGGER.info("resolving type from id {}", id);
-                Class<?> clazz = helper.loadClass(id);
+                Class<?> clazz = doLoadClass(id);
                 LOGGER.info("-> resolved {}", clazz.getName());
                 return SimpleType.construct(clazz);
             } catch (ClassNotFoundException e) {

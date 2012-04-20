@@ -113,7 +113,6 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
         JsonObjectSerializer jsonObjectSerializer = new JsonObjectSerializer();
         jsonObjectSerializer.setBundleContext(bundleContext);
-        jsonObjectSerializer.init();
         objectSerializer = jsonObjectSerializer;
 
         FilterChainFactory<MethodCallRequest, MethodResultMessage> factory =

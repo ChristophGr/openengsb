@@ -72,7 +72,6 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
 
         jsonObjectSerializer = new JsonObjectSerializer();
         jsonObjectSerializer.setBundleContext(bundleContext);
-        jsonObjectSerializer.init();
         
         List<Object> asList =
             Arrays.asList(

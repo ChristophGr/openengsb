@@ -217,7 +217,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     private GenericObjectSerializer makeJsonObjectSerializer() {
         JsonObjectSerializer jsonObjectSerializer = new JsonObjectSerializer();
         jsonObjectSerializer.setBundleContext(bundleContext);
-        jsonObjectSerializer.init();
         return jsonObjectSerializer;
     }
 
