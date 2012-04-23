@@ -83,7 +83,7 @@ import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.JsonObjectSerializer;
+import org.openengsb.core.common.json.JsonObjectSerializer;
 import org.openengsb.core.common.remote.CustomAnnotationReader;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;

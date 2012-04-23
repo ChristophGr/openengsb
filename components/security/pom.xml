@@ -139,6 +139,11 @@
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common.json</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>

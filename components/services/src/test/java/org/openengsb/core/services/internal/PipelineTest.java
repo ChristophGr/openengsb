@@ -47,7 +47,7 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.common.JsonObjectSerializer;
+import org.openengsb.core.common.json.JsonObjectSerializer;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilterFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;

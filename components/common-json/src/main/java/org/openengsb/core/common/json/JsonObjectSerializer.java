@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.common;
+package org.openengsb.core.common.json;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -88,19 +88,14 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
         TypeResolverBuilder<?> typer = new DefaultTypeResolverBuilder(DefaultTyping.OBJECT_AND_NON_CONCRETE) {
             @Override
             public boolean useForType(JavaType t) {
-                /*
+                /*-
                  * skip typing for containers
-                 * 
                  * This is required to avoid inclusion of specific type for maps and other container types.
                  * 
                  * Example:
-                 * 
                  * {
-                 * 
-                 * "@type" : "java.util.HashMap", <-- we don't want that
-                 * 
-                 * "id" : "foo"
-                 * 
+                 *   "@type" : "java.util.HashMap", <-- we don't want that
+                 *   "id" : "foo"
                  * }
                  */
                 return super.useForType(t) && !t.isContainerType();

@@ -118,6 +118,7 @@
     <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
     <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
     <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common.json/${project.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>

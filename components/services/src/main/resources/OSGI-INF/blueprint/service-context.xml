@@ -144,15 +144,6 @@
     </property>
   </bean>
 
-  <service id="jsonObjectSerializer" interface="org.openengsb.core.api.remote.GenericObjectSerializer">
-    <service-properties>
-      <entry key="serialization.format" value="json" />
-    </service-properties>
-    <bean class="org.openengsb.core.common.JsonObjectSerializer">
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
-
   <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>

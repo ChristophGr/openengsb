@@ -26,7 +26,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.JsonObjectSerializer;
+import org.openengsb.core.common.json.JsonObjectSerializer;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.util.CipherUtils;
