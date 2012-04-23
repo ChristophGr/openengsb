@@ -31,6 +31,9 @@ import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
+import org.codehaus.jackson.map.type.ArrayType;
+import org.codehaus.jackson.map.type.CollectionType;
+import org.codehaus.jackson.map.type.MapType;
 import org.codehaus.jackson.map.type.SimpleType;
 import org.codehaus.jackson.type.JavaType;
 import org.openengsb.core.api.remote.GenericObjectSerializer;
@@ -155,6 +158,16 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
                 LOGGER.info("resolving type from id {}", id);
                 Class<?> clazz = doLoadClass(id);
                 LOGGER.info("-> resolved {}", clazz.getName());
+                if (Map.class.isAssignableFrom(clazz)) {
+                    SimpleType oType = SimpleType.construct(Object.class);
+                    return MapType.construct(clazz, oType, oType);
+                }
+                if (Collection.class.isAssignableFrom(clazz)) {
+                    return CollectionType.construct(clazz, SimpleType.construct(Object.class));
+                }
+                if (clazz.isArray()) {
+                    ArrayType.construct(SimpleType.construct(clazz.getComponentType()), null, null);
+                }
                 return SimpleType.construct(clazz);
             } catch (ClassNotFoundException e) {
                 LOGGER.error("could not load class {}", id, e);
@@ -179,6 +192,11 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
         }
 
         private String useSpecialType(Class<?> suggestedType) {
+            for (Map.Entry<Class<?>, String> entry : specialTypes.entrySet()) {
+                if (entry.getKey().isAssignableFrom(suggestedType)) {
+                    return entry.getValue();
+                }
+            }
             if (specialTypes.containsKey(suggestedType)) {
                 return specialTypes.get(suggestedType);
             }
