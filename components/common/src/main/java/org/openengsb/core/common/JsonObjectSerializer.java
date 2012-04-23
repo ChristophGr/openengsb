@@ -17,6 +17,7 @@
 package org.openengsb.core.common;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -136,20 +137,34 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
         }
 
         private Class<?> doLoadClass(String name) throws ClassNotFoundException {
-            try {
-                return delegationClassLoader.loadClass(name);
-            } catch (ClassNotFoundException e) {
-                // ignore, try next
+            Class<?> clazz = doLoadClass0(name);
+            if (!clazz.isPrimitive()) {
+                return clazz;
             }
+            return ClassUtils.primitiveToWrapper(clazz);
+        }
+
+        private Class<?> doLoadClass0(String name) throws ClassNotFoundException {
             if (predefinedImplementations.containsKey(name)) {
                 return predefinedImplementations.get(name);
+            }
+            if (name.endsWith("[]")) {
+                String arrayComponentTypeName = name.substring(0, name.length() - 2);
+                LOGGER.info("trying to resolve an array with component-type: " + arrayComponentTypeName);
+                return Array.newInstance(doLoadClass(arrayComponentTypeName), 0).getClass();
             }
             try {
                 return getClass().getClassLoader().loadClass(name);
             } catch (ClassNotFoundException e) {
                 // ignore, try next
             }
-            return Thread.currentThread().getContextClassLoader().loadClass(name);
+            try {
+                return ClassUtils.getClass(name);
+            } catch (ClassNotFoundException e) {
+                // ignore, try next
+            }
+            LOGGER.info("could not find class {}. Try to find it using ClassProviders", name);
+            return delegationClassLoader.loadClass(name);
         }
 
         @Override
@@ -166,7 +181,7 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
                     return CollectionType.construct(clazz, SimpleType.construct(Object.class));
                 }
                 if (clazz.isArray()) {
-                    ArrayType.construct(SimpleType.construct(clazz.getComponentType()), null, null);
+                    return ArrayType.construct(SimpleType.construct(clazz.getComponentType()), null, null);
                 }
                 return SimpleType.construct(clazz);
             } catch (ClassNotFoundException e) {
@@ -192,6 +207,9 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
         }
 
         private String useSpecialType(Class<?> suggestedType) {
+            if (suggestedType.isArray()) {
+                return useSpecialType(suggestedType.getComponentType()) + "[]";
+            }
             for (Map.Entry<Class<?>, String> entry : specialTypes.entrySet()) {
                 if (entry.getKey().isAssignableFrom(suggestedType)) {
                     return entry.getValue();
