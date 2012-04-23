@@ -63,6 +63,9 @@ public class RequestHandlerImpl implements RequestHandler {
     private Object[] retrieveArguments(MethodCall call, Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         Object[] originalArgs = call.getArgs();
+        if (originalArgs == null) {
+            return null;
+        }
         for (int i = 0; i < originalArgs.length; i++) {
             Annotation[] currentArgAnnotations = parameterAnnotations[i];
             Class<? extends CustomJsonMarshaller<?>> transformationAnnotation =
@@ -186,6 +189,9 @@ public class RequestHandlerImpl implements RequestHandler {
 
     private Class<?>[] getArgTypes(MethodCall call) {
         Object[] args = call.getArgs();
+        if (args == null) {
+            return null;
+        }
         Class<?>[] types = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             types[i] = args[i].getClass();
