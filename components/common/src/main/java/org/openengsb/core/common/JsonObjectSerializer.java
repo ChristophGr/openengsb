@@ -32,10 +32,7 @@ import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
-import org.codehaus.jackson.map.type.ArrayType;
-import org.codehaus.jackson.map.type.CollectionType;
-import org.codehaus.jackson.map.type.MapType;
-import org.codehaus.jackson.map.type.SimpleType;
+import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
@@ -169,25 +166,16 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
 
         @Override
         public JavaType typeFromId(String id) {
+            Class<?> clazz;
             try {
                 LOGGER.info("resolving type from id {}", id);
-                Class<?> clazz = doLoadClass(id);
-                LOGGER.info("-> resolved {}", clazz.getName());
-                if (Map.class.isAssignableFrom(clazz)) {
-                    SimpleType oType = SimpleType.construct(Object.class);
-                    return MapType.construct(clazz, oType, oType);
-                }
-                if (Collection.class.isAssignableFrom(clazz)) {
-                    return CollectionType.construct(clazz, SimpleType.construct(Object.class));
-                }
-                if (clazz.isArray()) {
-                    return ArrayType.construct(SimpleType.construct(clazz.getComponentType()), null, null);
-                }
-                return SimpleType.construct(clazz);
+                clazz = doLoadClass(id);
             } catch (ClassNotFoundException e) {
                 LOGGER.error("could not load class {}", id, e);
                 return null;
             }
+            LOGGER.info("-> resolved {}", clazz.getName());
+            return TypeFactory.defaultInstance().constructType(clazz);
         }
 
         @Override

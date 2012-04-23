@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -167,6 +168,20 @@ public class ObjectSerializerTest extends AbstractOsgiMockServiceTest {
         String reference = ""
                 + "{"
                 + "  \"mcontent\" : [ \"list\", [ \"foo\", \"bar\" ] ]"
+                + "}";
+        assertEqualTrees(serialized, reference);
+        assertDeserializedIsOriginal(serialized, test);
+    }
+
+    @Test
+    public void testCollectionArrayContent() throws Exception {
+        Object test = new TestClass(new Collection[]{ Arrays.asList("foo", "bar"), });
+        String serialized = serializer.serializeToString(test);
+        System.out.println(serialized);
+
+        String reference = ""
+                + "{"
+                + "  \"mcontent\" : [ \"list[]\", [ [ \"foo\", \"bar\" ] ] ]"
                 + "}";
         assertEqualTrees(serialized, reference);
         assertDeserializedIsOriginal(serialized, test);
