@@ -34,6 +34,7 @@ import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.Provide;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.openengsb.labs.delegation.service.internal.ClassProviderWithAliases;
 
@@ -44,6 +45,7 @@ public class ObjectSerializerTest extends AbstractOsgiMockServiceTest {
 
     private GenericObjectSerializer serializer;
 
+    @Provide(alias = "test")
     public static class TestClass {
         private Object mcontent;
 
@@ -109,7 +111,7 @@ public class ObjectSerializerTest extends AbstractOsgiMockServiceTest {
         String reference = ""
                 + "{"
                 + "  \"mcontent\" : {"
-                + "    \"@type\" : \"org.openengsb.core.common.ObjectSerializerTest$TestClass\","
+                + "    \"@type\" : \"test\","
                 + "    \"mcontent\" : 1"
                 + "  }"
                 + "}";
@@ -196,10 +198,10 @@ public class ObjectSerializerTest extends AbstractOsgiMockServiceTest {
         String reference = ""
                 + "{"
                 + "  \"mcontent\" : [ \"list\", [ {"
-                + "    \"@type\" : \"org.openengsb.core.common.ObjectSerializerTest$TestClass\","
+                + "    \"@type\" : \"test\","
                 + "    \"mcontent\" : 1"
                 + "  }, {"
-                + "    \"@type\" : \"org.openengsb.core.common.ObjectSerializerTest$TestClass\","
+                + "    \"@type\" : \"test\","
                 + "    \"mcontent\" : 2"
                 + "  } ] ]"
                 + "}";
