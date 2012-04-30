@@ -43,6 +43,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ConnectorDescription implements Serializable {
 
+    private String domainType;
+    private String connectorType;
+
     private Map<String, String> attributes;
     private Map<String, Object> properties;
 
@@ -79,6 +82,22 @@ public class ConnectorDescription implements Serializable {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+
+    public String getDomainType() {
+        return domainType;
+    }
+
+    public void setDomainType(String domainType) {
+        this.domainType = domainType;
+    }
+
+    public String getConnectorType() {
+        return connectorType;
+    }
+
+    public void setConnectorType(String connectorType) {
+        this.connectorType = connectorType;
     }
 
     @Override

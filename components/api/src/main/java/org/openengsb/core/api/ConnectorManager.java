@@ -17,7 +17,8 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.model.ConnectorDefinition;
+import java.util.List;
+
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 
@@ -39,7 +40,7 @@ public interface ConnectorManager {
      *
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void create(ConnectorDefinition id, ConnectorDescription connectorDescription)
+    String create(ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException;
 
     /**
@@ -52,7 +53,7 @@ public interface ConnectorManager {
      *
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void forceCreate(ConnectorDefinition id, ConnectorDescription connectorDescription);
+    String forceCreate(ConnectorDescription connectorDescription);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
@@ -63,7 +64,7 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the combination of the new attributes are not valid
      * @throws IllegalArgumentException if no connector instance with the given id is available
      */
-    void update(ConnectorDefinition id, ConnectorDescription connectorDescription)
+    void update(String connectorId, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException, IllegalArgumentException;
 
     /**
@@ -74,7 +75,7 @@ public interface ConnectorManager {
      *
      * @throws IllegalArgumentException if no connector instancewith the given id is available
      */
-    void forceUpdate(ConnectorDefinition id, ConnectorDescription connectorDescription)
+    void forceUpdate(String connectorId, ConnectorDescription connectorDescription)
         throws IllegalArgumentException;
 
     /**
@@ -82,11 +83,25 @@ public interface ConnectorManager {
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(ConnectorDefinition id) throws PersistenceException;
+    void delete(String connectorId) throws PersistenceException;
+
+    List<String> listConnectors(String domainType);
+
+    List<String> listConnectors(String domainType, String connectorType);
 
     /**
      * Returns the description for the specified connector instance.
      */
-    ConnectorDescription getAttributeValues(ConnectorDefinition id);
+    ConnectorDescription getAttributeValues(String connectorId);
+
+    /**
+     * make a ProxyConnector appear as offline
+     */
+    void disconnectProxyConnector(String connectorId);
+
+    /**
+     * make a previously created ProxyConnector appear online again
+     */
+    void connectProxyConnector(String connectorId);
 
 }
