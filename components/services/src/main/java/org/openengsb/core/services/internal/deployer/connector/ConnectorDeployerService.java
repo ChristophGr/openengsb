@@ -98,6 +98,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
         login();
         try {
+            try {
+                serviceManager.getAttributeValues(configFile.getConnectorId());
+                LOGGER.debug("not creating connector {} because it already exists", configFile.getConnectorId());
+                return;
+            } catch (IllegalArgumentException e) {
+                // so it does not yet exist
+            }
             serviceManager.create(configFile.getConnectorId(),
                 new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
         } finally {
