@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -38,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * session key with the servers {@link java.security.PrivateKey}. The resulting byte[] is then processed by the next
  * filter. It returns a serialized version of the result (as byte[] again). The Response is then encrypted with the
  * previously obtained session-key and returned as byte[].
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [EncryptedMessage]             > Filter > [byte[] with decrypted content]    > ...
@@ -69,22 +70,30 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
         byte[] encryptedKey = input.getEncryptedKey();
         byte[] decryptedMessage;
         SecretKey sessionKey;
-        LOGGER.debug("decrypting encryptedMessage");
+        LOGGER.debug("decrypting encryptedMessage", Base64.encodeBase64String(input.getEncryptedContent()));
+        LOGGER.debug("with encrypted key", Base64.encodeBase64(encryptedKey));
         try {
-            LOGGER.trace("decrypting session-key");
+            LOGGER.debug("decrypting session-key with private key {}",
+                Base64.encodeBase64(privateKeySource.getPrivateKey().getEncoded()));
             byte[] sessionKeyData = CipherUtils.decrypt(encryptedKey, privateKeySource.getPrivateKey());
+            LOGGER.debug("decrpyted sessionkey to be {}", Base64.encodeBase64(sessionKeyData));
+            LOGGER.debug("deserializing sessoin-key for algorithm {}", secretKeyAlgorithm);
             sessionKey = CipherUtils.deserializeSecretKey(sessionKeyData, secretKeyAlgorithm);
             LOGGER.trace("decrypting message using session-key");
             decryptedMessage = CipherUtils.decrypt(input.getEncryptedContent(), sessionKey);
+            LOGGER.debug("decrypted message to be {}", Base64.encodeBase64String(decryptedMessage));
         } catch (DecryptionException e) {
             throw new FilterException(e);
         }
         LOGGER.debug("forwarding decrypted message to next filter {}", next);
         byte[] plainResult = (byte[]) next.filter(decryptedMessage, metaData);
+        LOGGER.debug("got result from next filter {}", Base64.encodeBase64String(plainResult));
         try {
-            LOGGER.trace("encrypting result using previously decrypted session-key");
+            LOGGER.debug("encrypting result using previously decrypted session-key {}",
+                Base64.encodeBase64String(sessionKey.getEncoded()));
             return CipherUtils.encrypt(plainResult, sessionKey);
         } catch (EncryptionException e) {
+            LOGGER.debug("could not encrypt result", e);
             throw new FilterException(e);
         }
     }

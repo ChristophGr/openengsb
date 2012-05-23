@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the
  * {@link org.apache.shiro.authc.AuthenticationInfo} and tries to authenticate. If authentication was successful, the
  * filter-chain will proceed. The result of the next filter is just passed through.
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
@@ -65,21 +65,25 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
     @Override
     protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
-
         String className = input.getCredentials().getClassName();
+        LOGGER.debug("credential Type " + className + " detected. Loading Type...");
         Class<? extends Credentials> credentialType;
         try {
             credentialType = loadCredentialsType(className);
         } catch (ClassNotFoundException e) {
+            LOGGER.debug("could not load credentialType", e);
             throw new FilterException(e);
         }
+        LOGGER.debug("loaded credentialType", credentialType.getName());
+        Credentials credentialObject = input.getCredentials().toObject(credentialType);
         try {
-            SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
+            LOGGER.debug("now logging in using {} - {}", input.getPrincipal(), credentialObject);
+            SecurityContext.login(input.getPrincipal(), credentialObject);
         } catch (AuthenticationException e) {
+            LOGGER.debug("could not authenticate using {} - {}", input.getPrincipal(), credentialObject);
             throw new FilterException(e);
         }
-
-        LOGGER.debug("authenticated");
+        LOGGER.debug("authenticated as {}", input.getPrincipal());
         return (MethodResultMessage) next.filter(input, metaData);
     }
 

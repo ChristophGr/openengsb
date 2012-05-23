@@ -36,6 +36,7 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -116,14 +117,19 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         FileKeySource fileKeySource = new FileKeySource("etc/keys", "RSA");
         fileKeySource.init();
         serverPublicKey = fileKeySource.getPublicKey();
+        LOGGER.debug("generated serverkey. public: {}", Base64.encodeBase64String(serverPublicKey.getEncoded()));
         privateKeySource = fileKeySource;
+        LOGGER.debug("generated serverkey. private: {}",
+            Base64.encodeBase64String(privateKeySource.getPrivateKey().getEncoded()));
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationDomain.class);
         when(authManager.authenticate(anyString(), any(Credentials.class))).thenAnswer(new Answer<Authentication>() {
             @Override
             public Authentication answer(InvocationOnMock invocation) throws Throwable {
+                LOGGER.debug("mocked authenticate()-invocation that always succeeds");
                 String username = (String) invocation.getArguments()[0];
                 Credentials credentials = (Credentials) invocation.getArguments()[1];
+                LOGGER.debug("authenticating {} - {}", username, credentials);
                 return new Authentication(username, credentials);
             }
         });
@@ -131,8 +137,12 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
+                LOGGER.debug("mocked requestHandler now handling {}", invocation);
                 MethodCall call = (MethodCall) invocation.getArguments()[0];
-                return new MethodResult(call.getArgs()[0], call.getMetaData());
+                LOGGER.debug("methodcall is {}", call);
+                MethodResult methodResult = new MethodResult(call.getArgs()[0], call.getMetaData());
+                LOGGER.debug("mirroring first argument as result {}", methodResult);
+                return methodResult;
             }
         });
 
@@ -201,9 +211,12 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
     public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
         when(authManager.authenticate(anyString(), any(Credentials.class))).thenThrow(
             new AuthenticationException("bad"));
+        LOGGER.debug("now invoking the critical test? {}", this.getClass());
         MethodCallMessage secureRequest = prepareSecureRequest();
+        LOGGER.debug("request has been prepared. Now comes the fun part...");
         try {
             processRequest(secureRequest);
+            LOGGER.debug("HURRAY IT FAILED");
             fail("Expected exception");
         } catch (FilterException e) {
             assertThat(e.getCause(), is(org.apache.shiro.authc.AuthenticationException.class));

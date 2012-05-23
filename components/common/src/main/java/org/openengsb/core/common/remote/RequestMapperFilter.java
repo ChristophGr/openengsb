@@ -23,11 +23,13 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This filter takes a {@link MethodCallMessage} and handles it using a {@link RequestHandler}. The result is then
  * wrapped to a {@link MethodResultMessage} and returned.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallMessage]   > Filter > [MethodCall]
@@ -42,6 +44,8 @@ import org.openengsb.core.api.remote.RequestHandler;
  */
 public class RequestMapperFilter extends AbstractFilterAction<MethodCallMessage, MethodResultMessage> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestMapperFilter.class);
+
     private RequestHandler requestHandler;
 
     public RequestMapperFilter() {
@@ -53,10 +57,17 @@ public class RequestMapperFilter extends AbstractFilterAction<MethodCallMessage,
 
     @Override
     protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) {
+        LOGGER.debug("mapping Request {}", input);
+        LOGGER.debug("metadata was {}", metadata);
         metadata.put("callId", input.getCallId());
         metadata.put("answer", input.isAnswer());
+        LOGGER.debug("populated metadata", metadata);
+        LOGGER.debug("forwarding call to requestHandler: {}", input.getMethodCall());
         MethodResult result = requestHandler.handleCall(input.getMethodCall());
-        return new MethodResultMessage(result, input.getCallId());
+        LOGGER.debug("got result from requestHandler {}", result);
+        MethodResultMessage methodResultMessage = new MethodResultMessage(result, input.getCallId());
+        LOGGER.debug("created result-message to return {}", methodResultMessage);
+        return methodResultMessage;
     }
 
     public void setRequestHandler(RequestHandler requestHandler) {

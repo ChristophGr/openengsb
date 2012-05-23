@@ -19,11 +19,13 @@ package org.openengsb.core.api.remote;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Objects;
+
 /**
- *
+ * 
  * Container for sending {@link MethodResult} to remote destinations. It contains the necessary routing- and
  * security-information.
- *
+ * 
  */
 @XmlRootElement
 public class MethodResultMessage extends MessageBase {
@@ -46,6 +48,15 @@ public class MethodResultMessage extends MessageBase {
 
     public void setResult(MethodResult result) {
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+            .add("result", result)
+            .add("callId", callId)
+            .add("timestamp", timestamp)
+            .toString();
     }
 
 }

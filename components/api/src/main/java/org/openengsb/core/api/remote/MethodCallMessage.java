@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.openengsb.core.api.model.BeanDescription;
 
+import com.google.common.base.Objects;
+
 /**
  * Container for sending {@link MethodCall}s to remote destinations. It contains the necessary routing- and
  * security-information.
@@ -98,6 +100,18 @@ public class MethodCallMessage extends MessageBase {
 
     public void setCredentials(BeanDescription credentials) {
         this.credentials = credentials;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+            .add("principal", principal)
+            .add("credentials", credentials.toObject().toString())
+            .add("message", methodCall)
+            .add("destination", destination)
+            .add("timestamp", timestamp)
+            .add("callId", callId)
+            .toString();
     }
 
 }

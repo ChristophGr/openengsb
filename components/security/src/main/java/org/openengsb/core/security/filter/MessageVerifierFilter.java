@@ -38,9 +38,9 @@ import com.google.common.cache.LoadingCache;
 /**
  * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the verification information
  * and verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
@@ -71,8 +71,10 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCall
     @Override
     protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         try {
+            LOGGER.debug("verifying message", input);
             verify(input);
         } catch (MessageVerificationFailedException e) {
+            LOGGER.debug("coudl not verify message", e);
             throw new FilterException(e);
         }
         return (MethodResultMessage) next.filter(input, metaData);
