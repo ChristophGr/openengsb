@@ -17,12 +17,17 @@
 
 package org.openengsb.domain.example.event;
 
-import org.openengsb.core.api.Event;
+import javax.xml.bind.annotation.XmlType;
 
+import org.openengsb.core.api.Event;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+
+@XmlType(namespace = "http://example.domain.openengsb.org/")
 public class LogEvent extends Event {
 
     private String message;
     private String level;
+    private ExampleRequestModel model;
 
     public LogEvent() {
         super("LogEvent");
@@ -43,4 +48,13 @@ public class LogEvent extends Event {
     public void setLevel(String level) {
         this.level = level;
     }
+
+    public ExampleRequestModel getModel() {
+        return model;
+    }
+
+    public void setModel(ExampleRequestModel model) {
+        this.model = model;
+    }
+
 }

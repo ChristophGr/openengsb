@@ -23,9 +23,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
+@XmlType(namespace = "http://api.openengsb.org/")
 public class Event {
     private String name;
     private Long processId;
@@ -48,7 +48,7 @@ public class Event {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -56,7 +56,7 @@ public class Event {
     }
 
     public Long getProcessId() {
-        return this.processId;
+        return processId;
     }
 
     public void setProcessId(Long processId) {
