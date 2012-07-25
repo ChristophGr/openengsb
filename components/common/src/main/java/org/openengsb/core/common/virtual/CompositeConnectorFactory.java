@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
-public class CompositeConnectorFactory extends VirtualConnectorFactory<CompositeConnector> {
+public class CompositeConnectorFactory<ConnectorType extends Connector> extends
+        VirtualConnectorFactory<ConnectorType, CompositeConnector> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompositeConnectorFactory.class);
 
@@ -87,7 +88,7 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(ConnectorType instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }
@@ -95,4 +96,5 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
     public void setUtilsService(OsgiUtilsService utilsService) {
         this.utilsService = utilsService;
     }
+
 }

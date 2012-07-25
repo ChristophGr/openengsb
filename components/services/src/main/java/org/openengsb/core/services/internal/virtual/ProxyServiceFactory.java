@@ -25,7 +25,8 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.VirtualConnectorFactory;
 
-public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector> {
+public class ProxyServiceFactory<ConnectorType extends Connector> extends
+        VirtualConnectorFactory<ConnectorType, ProxyConnector> {
 
     private OutgoingPortUtilService outgoingPortUtilService;
     private ProxyConnectorRegistryImpl connectorRegistry;
@@ -47,7 +48,7 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public void applyAttributes(Connector instance, Map<String, String> attributes) {
+    public void applyAttributes(ConnectorType instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
@@ -65,7 +66,7 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(ConnectorType instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }

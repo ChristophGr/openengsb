@@ -17,14 +17,14 @@
 
 package org.openengsb.connector.wicketacl.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class WicketAclServiceInstanceFactory extends
-        AbstractConnectorInstanceFactory<WicketAclServiceImpl> {
+public class WicketAclServiceInstanceFactory implements ConnectorInstanceFactory<WicketAclServiceImpl> {
 
     private UserDataManager userManager;
 
@@ -32,7 +32,7 @@ public class WicketAclServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(WicketAclServiceImpl instance, Map<String, String> attributes) {
+    public void applyAttributes(WicketAclServiceImpl instance, Map<String, String> attributes) {
     }
 
     @Override
@@ -42,6 +42,16 @@ public class WicketAclServiceInstanceFactory extends
 
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(WicketAclServiceImpl instance, Map<String, String> attributes) {
+        return Collections.emptyMap();
     }
 
 }

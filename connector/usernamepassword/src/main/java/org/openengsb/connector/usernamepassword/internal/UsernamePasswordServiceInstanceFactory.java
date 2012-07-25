@@ -17,14 +17,14 @@
 
 package org.openengsb.connector.usernamepassword.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class UsernamePasswordServiceInstanceFactory extends
-        AbstractConnectorInstanceFactory<UsernamePasswordServiceImpl> {
+public class UsernamePasswordServiceInstanceFactory implements ConnectorInstanceFactory<UsernamePasswordServiceImpl> {
 
     private UserDataManager userManager;
 
@@ -32,7 +32,7 @@ public class UsernamePasswordServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(UsernamePasswordServiceImpl instance, Map<String, String> attributes) {
+    public void applyAttributes(UsernamePasswordServiceImpl instance, Map<String, String> attributes) {
     }
 
     @Override
@@ -42,6 +42,17 @@ public class UsernamePasswordServiceInstanceFactory extends
 
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String>
+        getValidationErrors(UsernamePasswordServiceImpl instance, Map<String, String> attributes) {
+        return Collections.emptyMap();
     }
 
 }

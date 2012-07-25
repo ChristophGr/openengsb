@@ -32,8 +32,8 @@ import org.openengsb.core.api.DomainProvider;
  * is created and used in a proxy that is then returned as the resulting connector instance (which is registered as a
  * service).
  */
-public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnector>
-        implements ConnectorInstanceFactory {
+public abstract class VirtualConnectorFactory<ConnectorType extends Connector, VirtualType extends VirtualConnector>
+        implements ConnectorInstanceFactory<ConnectorType> {
 
     private DomainProvider domainProvider;
     protected Map<Domain, VirtualType> handlers = new HashMap<Domain, VirtualType>();
@@ -58,7 +58,7 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     protected abstract VirtualType createNewHandler(String id);
 
     @Override
-    public void applyAttributes(Connector instance, Map<String, String> attributes) {
+    public void applyAttributes(ConnectorType instance, Map<String, String> attributes) {
         VirtualType handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }

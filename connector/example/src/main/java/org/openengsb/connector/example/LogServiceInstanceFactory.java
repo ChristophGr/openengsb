@@ -17,14 +17,15 @@
 
 package org.openengsb.connector.example;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
-public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<LogService> {
+public class LogServiceInstanceFactory implements ConnectorInstanceFactory<LogService> {
 
     private ExampleDomainEvents domainEventInterface;
 
@@ -34,7 +35,7 @@ public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<
     }
 
     @Override
-    public void doApplyAttributes(LogService instance, Map<String, String> attributes) {
+    public void applyAttributes(LogService instance, Map<String, String> attributes) {
         if (attributes.containsKey("outputMode")) {
             instance.setOutputMode(attributes.get("outputMode"));
         }
@@ -45,5 +46,15 @@ public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<
 
     public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {
         this.domainEventInterface = domainEventInterface;
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(LogService instance, Map<String, String> attributes) {
+        return Collections.emptyMap();
     }
 }

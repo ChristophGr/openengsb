@@ -62,7 +62,9 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    static class DummyVirtualConnectorFactory extends VirtualConnectorFactory<DummyVirtualConnector> {
+    static class DummyVirtualConnectorFactory<ConnectorType extends Connector> extends
+            VirtualConnectorFactory<ConnectorType, DummyVirtualConnector> {
+
         protected DummyVirtualConnectorFactory(DomainProvider domainProvider) {
             super(domainProvider);
         }
@@ -78,7 +80,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         }
 
         @Override
-        public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
+        public Map<String, String> getValidationErrors(ConnectorType instance, Map<String, String> attributes) {
             return Collections.emptyMap();
         }
 

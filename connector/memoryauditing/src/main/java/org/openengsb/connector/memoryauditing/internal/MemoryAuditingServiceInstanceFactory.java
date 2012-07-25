@@ -17,12 +17,13 @@
 
 package org.openengsb.connector.memoryauditing.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 
-public class MemoryAuditingServiceInstanceFactory extends AbstractConnectorInstanceFactory<MemoryAuditingServiceImpl> {
+public class MemoryAuditingServiceInstanceFactory implements ConnectorInstanceFactory<MemoryAuditingServiceImpl> {
 
     @Override
     public Connector createNewInstance(String id) {
@@ -30,8 +31,18 @@ public class MemoryAuditingServiceInstanceFactory extends AbstractConnectorInsta
     }
 
     @Override
-    public void doApplyAttributes(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+    public void applyAttributes(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
         // nothing to do
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+        return Collections.emptyMap();
     }
 
 }

@@ -19,7 +19,7 @@ package org.openengsb.core.api;
 
 import java.util.Map;
 
-public interface ConnectorInstanceFactory {
+public interface ConnectorInstanceFactory<ConnectorType extends Connector> {
 
     /**
      * validates the attribute combination. This is used for validating attributes before creating a new service.
@@ -36,7 +36,7 @@ public interface ConnectorInstanceFactory {
      *
      * returns a Collection of error-messages. should return an empty map if there are no errors
      */
-    Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes);
+    Map<String, String> getValidationErrors(ConnectorType instance, Map<String, String> attributes);
 
     /**
      * creates a new instance with the given service-id. The serviceId should then be the the same as returned by
@@ -51,5 +51,5 @@ public interface ConnectorInstanceFactory {
      * validated before.
      *
      */
-    void applyAttributes(Connector instance, Map<String, String> attributes);
+    void applyAttributes(ConnectorType instance, Map<String, String> attributes);
 }

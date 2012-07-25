@@ -17,16 +17,16 @@
 
 package org.openengsb.connector.serviceacl.internal;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class ServiceAclServiceInstanceFactory extends
-        AbstractConnectorInstanceFactory<ServiceAclServiceImpl> {
+public class ServiceAclServiceInstanceFactory implements ConnectorInstanceFactory<ServiceAclServiceImpl> {
 
     private UserDataManager userManager;
     private List<SecurityAttributeProvider> attributeProviders;
@@ -35,7 +35,7 @@ public class ServiceAclServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(ServiceAclServiceImpl instance, Map<String, String> attributes) {
+    public void applyAttributes(ServiceAclServiceImpl instance, Map<String, String> attributes) {
     }
 
     @Override
@@ -49,6 +49,16 @@ public class ServiceAclServiceInstanceFactory extends
 
     public void setAttributeProviders(List<SecurityAttributeProvider> attributeProviders) {
         this.attributeProviders = attributeProviders;
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(ServiceAclServiceImpl instance, Map<String, String> attributes) {
+        return Collections.emptyMap();
     }
 
 }
