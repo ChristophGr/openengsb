@@ -50,7 +50,7 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
+        <value>org.openengsb.core.services.internal.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
           <property name="factory">
             <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
@@ -84,14 +84,14 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
-        <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
+        <value>org.openengsb.core.services.internal.security.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.services.internal.security.filter.MessageCryptoFilterFactory">
           <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+        <value>org.openengsb.core.services.internal.security.filter.JsonSecureRequestMarshallerFilter</value>
+        <value>org.openengsb.core.services.internal.security.filter.MessageVerifierFilter</value>
+        <bean class="org.openengsb.core.services.internal.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
@@ -106,9 +106,9 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+        <value>org.openengsb.core.services.internal.security.filter.JsonSecureRequestStringMarshallerFilter</value>
+        <value>org.openengsb.core.services.internal.security.filter.MessageVerifierFilter</value>
+        <bean class="org.openengsb.core.services.internal.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">

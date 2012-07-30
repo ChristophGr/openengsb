@@ -17,43 +17,26 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallMessage;
-import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.*;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
-import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 

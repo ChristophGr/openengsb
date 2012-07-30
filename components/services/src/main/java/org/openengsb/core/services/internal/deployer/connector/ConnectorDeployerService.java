@@ -34,7 +34,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.services.internal.security.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;

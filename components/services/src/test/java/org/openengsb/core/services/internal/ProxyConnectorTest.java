@@ -17,15 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Proxy;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,6 +29,15 @@ import org.openengsb.core.services.internal.virtual.ProxyConnector;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl;
 import org.openengsb.core.services.internal.virtual.ProxyRegistration;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+
+import java.lang.reflect.Proxy;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ProxyConnectorTest extends AbstractOpenEngSBTest {
 

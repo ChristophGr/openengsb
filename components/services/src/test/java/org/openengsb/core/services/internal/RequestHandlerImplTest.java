@@ -17,33 +17,25 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.openengsb.core.api.remote.*;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.osgi.framework.Constants;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.openengsb.core.api.remote.CustomJsonMarshaller;
-import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.Constants;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
 public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 

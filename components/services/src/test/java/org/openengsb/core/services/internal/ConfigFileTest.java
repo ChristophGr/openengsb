@@ -17,13 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItems;
-
-import java.io.File;
-import java.util.Arrays;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,6 +24,13 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
+
+import java.io.File;
+import java.util.Arrays;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 public class ConfigFileTest {
 

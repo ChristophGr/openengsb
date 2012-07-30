@@ -182,10 +182,6 @@
       <artifactId>commons-logging</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-    </dependency>
   </dependencies>
 </project>
 
