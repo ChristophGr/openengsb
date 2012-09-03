@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 import java.util.Random;
@@ -34,7 +35,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.core.workflow.api.RuleBaseException;
@@ -43,9 +43,6 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.drools.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.drools.util.RuleUtil;
 import org.openengsb.domain.example.ExampleDomain;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.model.ExampleRequestModel;
-import org.openengsb.domain.example.model.ExampleResponseModel;
 
 public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
 
@@ -204,33 +201,7 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
         session = rulebase.newStatefulKnowledgeSession();
         listener = new RuleListener();
         session.addEventListener(listener);
-        ExampleDomain exampleService = new ExampleDomain() {
-
-            @Override
-            public String getInstanceId() {
-                return null;
-            }
-
-            @Override
-            public AliveState getAliveState() {
-                return null;
-            }
-
-            @Override
-            public String doSomethingWithLogEvent(LogEvent event) {
-                return null;
-            }
-
-            @Override
-            public String doSomethingWithMessage(String message) {
-                return null;
-            }
-
-            @Override
-            public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
-                return null;
-            }
-        };
+        ExampleDomain exampleService =  mock(ExampleDomain.class);
         session.setGlobal("example2", exampleService);
     }
 

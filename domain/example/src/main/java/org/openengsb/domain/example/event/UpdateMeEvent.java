@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.domain.example.event;
 
-package org.openengsb.domain.example;
+import org.openengsb.core.api.Event;
 
-import org.openengsb.core.api.DomainEvents;
-import org.openengsb.domain.example.event.CommitDataEvent;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.UpdateMeEvent;
+public class UpdateMeEvent extends Event {
+    private String query;
 
-// @extract-start ExampleDomainEvents
-public interface ExampleDomainEvents extends DomainEvents {
-    void raiseEvent(LogEvent e);
+    public String getQuery() {
+        return query;
+    }
 
-    void raiseUpdateMeEvent(UpdateMeEvent e);
-
-    void raiseCommitDataEvent(CommitDataEvent e);
+    public void setQuery(String query) {
+        this.query = query;
+    }
 }
-// @extract-end ExampleDomainEvents

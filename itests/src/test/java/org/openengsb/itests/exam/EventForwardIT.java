@@ -73,6 +73,8 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
             return wasCalled;
         }
 
+
+
         @Override
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;

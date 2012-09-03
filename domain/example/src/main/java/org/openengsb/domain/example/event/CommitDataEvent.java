@@ -14,20 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.domain.example.event;
 
-package org.openengsb.domain.example;
+import java.util.List;
 
-import org.openengsb.core.api.DomainEvents;
-import org.openengsb.domain.example.event.CommitDataEvent;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.UpdateMeEvent;
+import org.openengsb.core.api.Event;
+import org.openengsb.domain.example.model.ExampleRequestModel;
 
-// @extract-start ExampleDomainEvents
-public interface ExampleDomainEvents extends DomainEvents {
-    void raiseEvent(LogEvent e);
+public class CommitDataEvent extends Event {
 
-    void raiseUpdateMeEvent(UpdateMeEvent e);
+    private List<ExampleRequestModel> changedModels;
+    private List<ExampleRequestModel> deletedModels;
 
-    void raiseCommitDataEvent(CommitDataEvent e);
+    public List<ExampleRequestModel> getChangedModels() {
+        return changedModels;
+    }
+
+    public void setChangedModels(List<ExampleRequestModel> changedModels) {
+        this.changedModels = changedModels;
+    }
+
+    public List<ExampleRequestModel> getDeletedModels() {
+        return deletedModels;
+    }
+
+    public void setDeletedModels(List<ExampleRequestModel> deletedModels) {
+        this.deletedModels = deletedModels;
+    }
 }
-// @extract-end ExampleDomainEvents
