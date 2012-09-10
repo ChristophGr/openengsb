@@ -43,6 +43,8 @@ public interface ExampleDomain extends Domain {
     @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);
 
+    void updateData(ExampleRequestModel[] changedModels, Integer[] deletedModels);
+
     public enum ExampleEnum {
         ONE, TWO, THREE
     }
