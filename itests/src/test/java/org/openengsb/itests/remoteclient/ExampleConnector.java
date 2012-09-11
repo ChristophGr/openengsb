@@ -17,6 +17,8 @@
 
 package org.openengsb.itests.remoteclient;
 
+import java.util.Arrays;
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
@@ -61,4 +63,10 @@ public class ExampleConnector extends AbstractOpenEngSBConnectorService implemen
         return response;
     }
 
+    @Override
+    public void updateData(ExampleRequestModel[] changedModels, Integer[] deletedModels) {
+        LOGGER.info("updating data");
+        LOGGER.info("changed: {}", Arrays.toString(changedModels));
+        LOGGER.info("deleted: {}", Arrays.toString(deletedModels));
+    }
 }

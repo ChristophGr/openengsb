@@ -17,6 +17,8 @@
 
 package org.openengsb.connector.example.internal;
 
+import java.util.Arrays;
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.example.ExampleDomain;
@@ -86,4 +88,10 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
         return response;
     }
 
+    @Override
+    public void updateData(ExampleRequestModel[] changedModels, Integer[] deletedModels) {
+        LOGGER.info("updating data");
+        LOGGER.info("changed: {}", Arrays.toString(changedModels));
+        LOGGER.info("deleted: {}", Arrays.toString(deletedModels));
+    }
 }

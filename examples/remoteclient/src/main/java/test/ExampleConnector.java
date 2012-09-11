@@ -17,6 +17,8 @@
 
 package test;
 
+import java.util.Arrays;
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.domain.example.ExampleDomain;
@@ -83,4 +85,10 @@ class ExampleConnector implements ExampleDomain, Connector {
         return response;
     }
 
+    @Override
+    public void updateData(ExampleRequestModel[] changedModels, Integer[] deletedModels) {
+        LOGGER.info("updating data");
+        LOGGER.info("changed: {}", Arrays.toString(changedModels));
+        LOGGER.info("deleted: {}", Arrays.toString(deletedModels));
+    }
 }

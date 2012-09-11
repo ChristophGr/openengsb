@@ -16,29 +16,27 @@
  */
 package org.openengsb.domain.example.event;
 
-import java.util.List;
-
 import org.openengsb.core.api.Event;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 
 public class CommitDataEvent extends Event {
 
-    private List<ExampleRequestModel> changedModels;
-    private List<ExampleRequestModel> deletedModels;
+    private ExampleRequestModel[] changedModels;
+    private ExampleRequestModel[] deletedModels;
 
-    public List<ExampleRequestModel> getChangedModels() {
+    public ExampleRequestModel[] getChangedModels() {
         return changedModels;
     }
 
-    public void setChangedModels(List<ExampleRequestModel> changedModels) {
+    public void setChangedModels(ExampleRequestModel[] changedModels) {
         this.changedModels = changedModels;
     }
 
-    public List<ExampleRequestModel> getDeletedModels() {
+    public ExampleRequestModel[] getDeletedModels() {
         return deletedModels;
     }
 
-    public void setDeletedModels(List<ExampleRequestModel> deletedModels) {
+    public void setDeletedModels(ExampleRequestModel[] deletedModels) {
         this.deletedModels = deletedModels;
     }
 }
