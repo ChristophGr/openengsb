@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.connector.virtual.filewatcher.internal;
 
 import java.io.File;
 import java.lang.reflect.Method;

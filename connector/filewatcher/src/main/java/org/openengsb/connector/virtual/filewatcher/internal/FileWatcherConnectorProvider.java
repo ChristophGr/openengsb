@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.connector.virtual.filewatcher.internal;
 
+import org.openengsb.connector.virtual.filewatcher.FileWatcherConnectorFactory;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;

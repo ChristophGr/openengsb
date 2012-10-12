@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.connector.virtual.filewatcher;
 
 import java.util.Collections;
 import java.util.Map;
 
+import org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnector;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -35,7 +36,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private OsgiUtilsService utilsService;
 
-    protected FileWatcherConnectorFactory(DomainProvider domainProvider, OsgiUtilsService utilsService) {
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, OsgiUtilsService utilsService) {
         super(domainProvider);
         this.utilsService = utilsService;
     }

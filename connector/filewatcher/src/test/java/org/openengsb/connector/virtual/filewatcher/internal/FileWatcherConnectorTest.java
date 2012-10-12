@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.services.internal;
+package org.openengsb.connector.virtual.filewatcher.internal;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -40,7 +40,8 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.services.internal.virtual.FileWatcherConnectorProvider;
+import org.openengsb.core.services.internal.ConnectorManagerImpl;
+import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
