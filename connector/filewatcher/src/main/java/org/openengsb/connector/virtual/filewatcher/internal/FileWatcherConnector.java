@@ -18,12 +18,19 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Timer;
 
+import org.openengsb.core.api.Event;
 import org.openengsb.core.common.VirtualConnector;
+import org.openengsb.core.workflow.api.WorkflowService;
 
 public class FileWatcherConnector extends VirtualConnector {
 
     private String watchfile;
+
+    private WorkflowService workflowService;
+
+    private Timer timer = new Timer();
 
     public FileWatcherConnector(String instanceId) {
         super(instanceId);
@@ -42,8 +49,16 @@ public class FileWatcherConnector extends VirtualConnector {
     public void setWatchfile(String watchfile) {
         this.watchfile = watchfile;
         File file = new File(watchfile);
-        if(!file.getParentFile().exists()){
+        if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
+        timer.schedule(new DirectoryWatcher(file) {
+            @Override
+            protected void onFileModified() {
+                Event event = new Event();
+                event.setName("test");
+                workflowService.processEvent(event);
+            }
+        }, 0, 1000);
     }
 }

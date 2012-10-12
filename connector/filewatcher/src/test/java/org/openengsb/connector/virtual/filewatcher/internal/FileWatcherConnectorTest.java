@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -118,6 +119,20 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         connectorManager.create(desc);
 
         assertThat(testconnectorFolder.exists(), is(true));
+    }
+
+    @Test
+    public void modifyWatchedFile_shouldCallOnModified() throws Exception {
+        File testconnectorFolder = new File(tmpFolder.getRoot(), "testconnector");
+        File testFile = new File(testconnectorFolder, "testfile");
+        Map<String,String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath());
+        ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
+        connectorManager.create(desc);
+
+        FileUtils.write(testFile, "test-content");
+        Thread.sleep(1000);
+        System.out.println("asdf");
+
     }
 
 }
