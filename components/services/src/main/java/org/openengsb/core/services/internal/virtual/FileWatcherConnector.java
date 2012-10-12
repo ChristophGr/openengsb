@@ -16,6 +16,7 @@
  */
 package org.openengsb.core.services.internal.virtual;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.common.VirtualConnector;
@@ -30,7 +31,7 @@ public class FileWatcherConnector extends VirtualConnector {
 
     public FileWatcherConnector(String instanceId, String watchfile) {
         super(instanceId);
-        this.watchfile = watchfile;
+        setWatchfile(watchfile);
     }
 
     @Override
@@ -40,5 +41,9 @@ public class FileWatcherConnector extends VirtualConnector {
 
     public void setWatchfile(String watchfile) {
         this.watchfile = watchfile;
+        File file = new File(watchfile);
+        if(!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
+        }
     }
 }

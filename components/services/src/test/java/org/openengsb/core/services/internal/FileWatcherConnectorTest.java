@@ -17,26 +17,49 @@
 package org.openengsb.core.services.internal;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.VirtualConnectorProvider;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.internal.Activator;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.virtual.FileWatcherConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.ServiceReference;
 
+import com.google.common.collect.ImmutableMap;
+
 public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
+
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
+
+
+    protected ConnectorManager connectorManager;
 
     @Before
     public void setUp() throws Exception {
+        setupConnectorManager();
+
         Activator activator = new Activator();
         activator.start(bundleContext);
         createDomainProviderMock(NullDomain.class, "example");
@@ -48,9 +71,52 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         registerService(provider, props, VirtualConnectorProvider.class);
     }
 
+    private void setupConnectorManager() {
+        ConnectorRegistrationManager serviceRegistrationManagerImpl = new ConnectorRegistrationManager();
+        serviceRegistrationManagerImpl.setBundleContext(bundleContext);
+
+        ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
+        serviceManagerImpl.setRegistrationManager(serviceRegistrationManagerImpl);
+        serviceManagerImpl.setConfigPersistence(registerConfigPersistence());
+        connectorManager = serviceManagerImpl;
+    }
+
+    private ConfigPersistenceService registerConfigPersistence() {
+        DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.CONFIGURATION_ID, Constants.CONFIG_CONNECTOR);
+        props.put(Constants.BACKEND_ID, "dummy");
+        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
+        registerService(configPersistence, props, ConfigPersistenceService.class);
+        return configPersistence;
+    }
+
     @Test
-    public void createConnector() throws Exception {
+    public void testConnectorProviderIsCreated() throws Exception {
         Collection<ServiceReference<ConnectorProvider>> serviceReferences = bundleContext.getServiceReferences(ConnectorProvider.class, "(domain=example)");
         assertThat(serviceReferences.isEmpty(), is(false));
     }
+
+    @Test
+    public void createFileWatcherConnector_shouldRegisterService() throws Exception {
+        File testfile = tmpFolder.newFile("testfile");
+        Map<String,String> attributes = ImmutableMap.of("watchfile", testfile.getAbsolutePath());
+        ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
+        connectorManager.create(desc);
+
+        ServiceReference<NullDomain> serviceReference = bundleContext.getServiceReference(NullDomain.class);
+        assertThat(serviceReference, not(nullValue()));
+    }
+
+    @Test
+    public void createFileWatcherConnector_shouldCreateWatchDir() throws Exception {
+        File testconnectorFolder = new File(tmpFolder.getRoot(), "testconnector");
+        File testFile = new File(testconnectorFolder, "testfile");
+        Map<String,String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath());
+        ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
+        connectorManager.create(desc);
+
+        assertThat(testconnectorFolder.exists(), is(true));
+    }
+
 }
