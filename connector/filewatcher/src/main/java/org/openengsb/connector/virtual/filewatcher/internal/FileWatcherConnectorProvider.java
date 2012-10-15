@@ -23,10 +23,12 @@ import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
-import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.workflow.api.WorkflowService;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
-    
+
+    private WorkflowService workflowService;
+
     @Override
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
@@ -36,14 +38,17 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
         builder.description("composite.description");
 
         builder.attribute(builder.newAttribute().id("watchfile").name("filewatcher.watchfile.id")
-            .description("composite.queryString.description").build());
+                .description("composite.queryString.description").build());
 
         return builder.build();
     }
 
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
-        return new FileWatcherConnectorFactory(provider, new DefaultOsgiUtilsService(bundleContext));
+        return new FileWatcherConnectorFactory(provider, workflowService);
     }
 
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
 }

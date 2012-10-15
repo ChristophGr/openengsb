@@ -20,6 +20,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.util.Collection;
@@ -46,6 +49,7 @@ import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.collect.ImmutableMap;
@@ -55,20 +59,21 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     @Rule
     public TemporaryFolder tmpFolder = new TemporaryFolder();
 
+    private WorkflowService workflowService;
 
     protected ConnectorManager connectorManager;
 
     @Before
     public void setUp() throws Exception {
         setupConnectorManager();
-
+        workflowService = mock(WorkflowService.class);
         Activator activator = new Activator();
         activator.start(bundleContext);
         createDomainProviderMock(NullDomain.class, "example");
-
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "filewatcher");
         FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider();
+        provider.setWorkflowService(workflowService);
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
     }
@@ -102,7 +107,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     @Test
     public void createFileWatcherConnector_shouldRegisterService() throws Exception {
         File testfile = tmpFolder.newFile("testfile");
-        Map<String,String> attributes = ImmutableMap.of("watchfile", testfile.getAbsolutePath());
+        Map<String, String> attributes = ImmutableMap.of("watchfile", testfile.getAbsolutePath(), "eventClass", TestUpdateEvent.class.getName());
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
 
@@ -114,10 +119,9 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     public void createFileWatcherConnector_shouldCreateWatchDir() throws Exception {
         File testconnectorFolder = new File(tmpFolder.getRoot(), "testconnector");
         File testFile = new File(testconnectorFolder, "testfile");
-        Map<String,String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath());
+        Map<String, String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath(), "eventClass", TestUpdateEvent.class.getName());
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
-
         assertThat(testconnectorFolder.exists(), is(true));
     }
 
@@ -125,14 +129,14 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     public void modifyWatchedFile_shouldCallOnModified() throws Exception {
         File testconnectorFolder = new File(tmpFolder.getRoot(), "testconnector");
         File testFile = new File(testconnectorFolder, "testfile");
-        Map<String,String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath());
+        Map<String, String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath(), "eventClass", TestUpdateEvent.class.getName());
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
 
         FileUtils.write(testFile, "test-content");
-        Thread.sleep(1000);
+        Thread.sleep(5000);
         System.out.println("asdf");
-
+        verify(workflowService).processEvent(any(TestUpdateEvent.class));
     }
 
 }

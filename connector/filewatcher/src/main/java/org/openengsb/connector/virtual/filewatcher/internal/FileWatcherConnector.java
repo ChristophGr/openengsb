@@ -30,6 +30,8 @@ public class FileWatcherConnector extends VirtualConnector {
 
     private WorkflowService workflowService;
 
+    private Class<? extends Event> eventClass;
+
     private Timer timer = new Timer();
 
     public FileWatcherConnector(String instanceId) {
@@ -48,6 +50,9 @@ public class FileWatcherConnector extends VirtualConnector {
 
     public void setWatchfile(String watchfile) {
         this.watchfile = watchfile;
+    }
+
+    public void init() {
         File file = new File(watchfile);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
@@ -55,10 +60,28 @@ public class FileWatcherConnector extends VirtualConnector {
         timer.schedule(new DirectoryWatcher(file) {
             @Override
             protected void onFileModified() {
-                Event event = new Event();
-                event.setName("test");
+                Event event = null;
+                try {
+                    event = eventClass.newInstance();
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
                 workflowService.processEvent(event);
             }
         }, 0, 1000);
+    }
+
+    public void setEventClass(String eventClass) {
+        try {
+            this.eventClass = (Class<? extends Event>) Class.forName(eventClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
     }
 }

@@ -23,8 +23,8 @@ import java.util.Map;
 import org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnector;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.VirtualConnectorFactory;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +34,19 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorFactory.class);
 
-    private OsgiUtilsService utilsService;
+    private WorkflowService workflowService;
 
-    public FileWatcherConnectorFactory(DomainProvider domainProvider, OsgiUtilsService utilsService) {
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, WorkflowService workflowService) {
         super(domainProvider);
-        this.utilsService = utilsService;
+        this.workflowService = workflowService;
     }
 
     @Override
     protected void updateHandlerAttributes(FileWatcherConnector handler, Map<String, String> attributes) {
         handler.setWatchfile(attributes.get("watchfile"));
+        handler.setEventClass(attributes.get("eventClass"));
+        handler.setWorkflowService(workflowService);
+        handler.init();
     }
 
     @Override
@@ -63,4 +66,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
         return Collections.emptyMap();
     }
 
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
 }
