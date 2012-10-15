@@ -17,18 +17,22 @@
 package org.openengsb.connector.virtual.filewatcher.internal;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Timer;
 
+import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.common.VirtualConnector;
-import org.openengsb.core.workflow.api.WorkflowService;
 
 public class FileWatcherConnector extends VirtualConnector {
 
     private String watchfile;
 
-    private WorkflowService workflowService;
+    private DomainEvents domainEvents;
+
+    private Method raiseMethod;
 
     private Class<? extends Event> eventClass;
 
@@ -57,18 +61,29 @@ public class FileWatcherConnector extends VirtualConnector {
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
+        for (Method m : domainEvents.getClass().getMethods()) {
+            if (Arrays.equals(m.getParameterTypes(), new Class<?>[]{eventClass})) {
+                raiseMethod = m;
+                break;
+            }
+        }
+        if (raiseMethod == null) {
+            throw new IllegalStateException("could not find correspinding raise-method for event " + eventClass.getName() + " in interface " + domainEvents.getClass().getName());
+        }
         timer.schedule(new DirectoryWatcher(file) {
             @Override
             protected void onFileModified() {
                 Event event = null;
                 try {
                     event = eventClass.newInstance();
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
+                    raiseMethod.invoke(domainEvents, event);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
                 }
-                workflowService.processEvent(event);
             }
         }, 0, 1000);
     }
@@ -77,7 +92,7 @@ public class FileWatcherConnector extends VirtualConnector {
         this.eventClass = eventClass;
     }
 
-    public void setWorkflowService(WorkflowService workflowService) {
-        this.workflowService = workflowService;
+    public void setDomainEvents(DomainEvents domainEvents) {
+        this.domainEvents = domainEvents;
     }
 }

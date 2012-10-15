@@ -25,7 +25,7 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.common.VirtualConnectorFactory;
-import org.openengsb.core.workflow.api.WorkflowService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -37,13 +37,13 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorFactory.class);
 
-    private WorkflowService workflowService;
     private ClassLoader classloader;
+    private DefaultOsgiUtilsService utilsService;
 
-    public FileWatcherConnectorFactory(DomainProvider domainProvider, BundleContext bundleContext, WorkflowService workflowService) {
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, BundleContext bundleContext) {
         super(domainProvider);
-        this.workflowService = workflowService;
-        this.classloader = new DelegationClassLoader(bundleContext);
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
+        classloader = new DelegationClassLoader(bundleContext);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
             throw new RuntimeException(e);
         }
         handler.setEventClass(eventClass);
-        handler.setWorkflowService(workflowService);
+        handler.setDomainEvents(utilsService.getOsgiServiceProxy(domainProvider.getDomainEventInterface()));
         handler.init();
     }
 
@@ -70,9 +70,8 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
     public Map<String, String> getValidationErrors(Map<String, String> attributes) {
         Map<String, String> result = Maps.newHashMap();
         String className = attributes.get("eventClass");
-        Class<?> eventClass = null;
         try {
-            eventClass = classloader.loadClass(className);
+            classloader.loadClass(className);
         } catch (ClassNotFoundException e) {
             result.put("cannot load event-class", e.getMessage());
         }
@@ -85,7 +84,4 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
         return Collections.emptyMap();
     }
 
-    public void setWorkflowService(WorkflowService workflowService) {
-        this.workflowService = workflowService;
-    }
 }

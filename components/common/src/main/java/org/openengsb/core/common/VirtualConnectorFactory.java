@@ -35,7 +35,7 @@ import org.openengsb.core.api.DomainProvider;
 public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnector>
         implements ConnectorInstanceFactory {
 
-    private DomainProvider domainProvider;
+    protected DomainProvider domainProvider;
     protected Map<Domain, VirtualType> handlers = new HashMap<Domain, VirtualType>();
 
     protected VirtualConnectorFactory(DomainProvider domainProvider) {

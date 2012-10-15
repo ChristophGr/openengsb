@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Collection;
@@ -36,9 +37,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.DomainEvents;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -49,7 +54,6 @@ import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
-import org.openengsb.core.workflow.api.WorkflowService;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.collect.ImmutableMap;
@@ -59,25 +63,30 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     @Rule
     public TemporaryFolder tmpFolder = new TemporaryFolder();
 
-    private WorkflowService workflowService;
-
     protected ConnectorManager connectorManager;
+    private NullDomainEvents domainEvents;
 
     @Before
     public void setUp() throws Exception {
         setupConnectorManager();
-        workflowService = mock(WorkflowService.class);
         Activator activator = new Activator();
         activator.start(bundleContext);
-        createDomainProviderMock(NullDomain.class, "example");
+        DomainProvider domainProviderMock = createDomainProviderMock(NullDomain.class, "example");
+        when(domainProviderMock.getDomainEventInterface()).thenAnswer(new Answer<Class<? extends DomainEvents>>() {
+            @Override
+            public Class<? extends DomainEvents> answer(InvocationOnMock invocation) throws Throwable {
+                return NullDomainEvents.class;
+            }
+        });
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "filewatcher");
 
         FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider();
-        provider.setWorkflowService(workflowService);
         provider.setBundleContext(bundleContext);
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
+        domainEvents = mock(NullDomainEvents.class);
+        registerService(domainEvents, new Hashtable<String, Object>(), NullDomainEvents.class, DomainEvents.class);
     }
 
     private void setupConnectorManager() {
@@ -136,7 +145,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         connectorManager.create(desc);
         FileUtils.write(testFile, "test-content");
         Thread.sleep(5000);
-        verify(workflowService).processEvent(any(TestUpdateEvent.class));
+        verify(domainEvents).raiseEvent(any(TestUpdateEvent.class));
     }
 
 }
