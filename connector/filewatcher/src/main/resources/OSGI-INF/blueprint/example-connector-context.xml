@@ -26,7 +26,9 @@
     </interfaces>
     <bean class="org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnectorProvider">
       <property name="id" value="filewatcher" />
+      <property name="workflowService" ref="workflowService" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+  <reference id="workflowService" interface="org.openengsb.core.workflow.api.WorkflowService" />
 </blueprint>
