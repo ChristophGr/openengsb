@@ -145,6 +145,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
         FileUtils.write(testFile, "test-content");
-        verify(domainEvents, timeout(5000)).raiseEvent(any(TestUpdateEvent.class)); }
+        verify(domainEvents, timeout(5000)).raiseEvent(any(TestUpdateEvent.class));
+    }
 
 }
