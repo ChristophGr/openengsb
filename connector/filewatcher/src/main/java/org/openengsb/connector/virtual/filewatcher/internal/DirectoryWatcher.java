@@ -19,7 +19,13 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 import java.io.File;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class DirectoryWatcher extends TimerTask {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryWatcher.class);
+
     private File watchfile;
 
     private long lastmodified;
@@ -31,7 +37,7 @@ public abstract class DirectoryWatcher extends TimerTask {
 
     @Override
     public void run() {
-        System.out.println("polling file " + watchfile);
+        LOGGER.debug("polling file " + watchfile);
         long lm = watchfile.lastModified();
         if(lm == lastmodified){
             return;
