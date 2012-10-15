@@ -24,10 +24,12 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
 import org.openengsb.core.workflow.api.WorkflowService;
+import org.osgi.framework.BundleContext;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
 
     private WorkflowService workflowService;
+    private BundleContext bundleContext;
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -45,10 +47,14 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
 
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
-        return new FileWatcherConnectorFactory(provider, workflowService);
+        return new FileWatcherConnectorFactory(provider, bundleContext, workflowService);
     }
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }

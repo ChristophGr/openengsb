@@ -23,8 +23,11 @@ import java.util.Map;
 import org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnector;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.Event;
 import org.openengsb.core.common.VirtualConnectorFactory;
 import org.openengsb.core.workflow.api.WorkflowService;
+import org.openengsb.labs.delegation.service.DelegationClassLoader;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +38,25 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorFactory.class);
 
     private WorkflowService workflowService;
+    private ClassLoader classloader;
 
-    public FileWatcherConnectorFactory(DomainProvider domainProvider, WorkflowService workflowService) {
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, BundleContext bundleContext, WorkflowService workflowService) {
         super(domainProvider);
         this.workflowService = workflowService;
+        this.classloader = new DelegationClassLoader(bundleContext);
     }
 
     @Override
     protected void updateHandlerAttributes(FileWatcherConnector handler, Map<String, String> attributes) {
         handler.setWatchfile(attributes.get("watchfile"));
-        handler.setEventClass(attributes.get("eventClass"));
+        String className = attributes.get("eventClass");
+        Class<? extends Event> eventClass = null;
+        try {
+            eventClass = (Class<? extends Event>) classloader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        handler.setEventClass(eventClass);
         handler.setWorkflowService(workflowService);
         handler.init();
     }
@@ -57,6 +69,13 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
     @Override
     public Map<String, String> getValidationErrors(Map<String, String> attributes) {
         Map<String, String> result = Maps.newHashMap();
+        String className = attributes.get("eventClass");
+        Class<?> eventClass = null;
+        try {
+            eventClass = classloader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            result.put("cannot load event-class", e.getMessage());
+        }
         return result;
     }
 

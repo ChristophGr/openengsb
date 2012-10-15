@@ -73,12 +73,8 @@ public class FileWatcherConnector extends VirtualConnector {
         }, 0, 1000);
     }
 
-    public void setEventClass(String eventClass) {
-        try {
-            this.eventClass = (Class<? extends Event>) Class.forName(eventClass);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void setEventClass(Class<? extends Event> eventClass) {
+        this.eventClass = eventClass;
     }
 
     public void setWorkflowService(WorkflowService workflowService) {

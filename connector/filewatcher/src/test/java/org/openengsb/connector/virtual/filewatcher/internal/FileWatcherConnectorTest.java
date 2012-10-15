@@ -72,8 +72,10 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         createDomainProviderMock(NullDomain.class, "example");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "filewatcher");
+
         FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider();
         provider.setWorkflowService(workflowService);
+        provider.setBundleContext(bundleContext);
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
     }
@@ -132,10 +134,8 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         Map<String, String> attributes = ImmutableMap.of("watchfile", testFile.getAbsolutePath(), "eventClass", TestUpdateEvent.class.getName());
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
-
         FileUtils.write(testFile, "test-content");
         Thread.sleep(5000);
-        System.out.println("asdf");
         verify(workflowService).processEvent(any(TestUpdateEvent.class));
     }
 
