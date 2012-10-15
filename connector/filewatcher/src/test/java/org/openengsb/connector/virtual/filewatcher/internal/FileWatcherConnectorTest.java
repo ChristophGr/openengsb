@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -144,8 +145,6 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription desc = new ConnectorDescription("example", "filewatcher", attributes, new HashMap<String, Object>());
         connectorManager.create(desc);
         FileUtils.write(testFile, "test-content");
-        Thread.sleep(5000);
-        verify(domainEvents).raiseEvent(any(TestUpdateEvent.class));
-    }
+        verify(domainEvents, timeout(5000)).raiseEvent(any(TestUpdateEvent.class)); }
 
 }
