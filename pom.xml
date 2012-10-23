@@ -1345,6 +1345,8 @@
     <!-- OpenEngSB Examples Modules -->
     <module>examples/remoteclient</module>
     <module>examples/remotesamples</module>
+    <module>examples/domain-foo</module>
+    <module>examples/domain-bar</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
     <!-- OpenEngSB Manual -->
